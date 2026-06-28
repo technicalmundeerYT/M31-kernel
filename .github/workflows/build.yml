@@ -16,19 +16,14 @@ jobs:
           sudo apt install -y bc bison build-essential flex libc6-dev libncurses5-dev libssl-dev python3
           mkdir -p toolchain
 
-      - name: Download and Extract Toolchain
+      - name: Download Toolchain
         run: |
-          # Toolchain download aur extract karna
-          wget -q https://github.com/Khangaroo/clang/releases/download/v15.0.6/clang-r450784d.tar.gz -O toolchain.tar.gz
+          # Yahan wo link dalein jo aapne khud upload ki hai
+          curl -L -o toolchain.tar.gz "PASTE_YOUR_RELEASE_LINK_HERE"
           tar -xzf toolchain.tar.gz -C toolchain --strip-components=1
 
       - name: Build TechnicalMundeer Kernel
         run: |
-          # Custom branding
           export EXTRAVERSION="-TechnicalMundeer"
-          
-          # Toolchain path set karna
           export PATH=$GITHUB_WORKSPACE/toolchain/bin:$PATH
-          
-          # Kernel Build command
           python3 build_kernel.py --target m31 --oneui
