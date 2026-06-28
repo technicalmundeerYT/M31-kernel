@@ -1,2 +1,2 @@
 # M31-kernel
-M31-kernel by technical Mundeer 
+M31-kernel by Technical Mundeer 
