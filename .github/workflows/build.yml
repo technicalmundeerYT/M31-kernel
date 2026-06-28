@@ -18,10 +18,19 @@ jobs:
           export ARCH=arm64
           export CROSS_COMPILE=aarch64-linux-gnu-
           
-          # HID Configs
-          echo "CONFIG_USB_HID=y" >> arch/arm64/configs/m31_defconfig
-          echo "CONFIG_USB_G_HID=y" >> arch/arm64/configs/m31_defconfig
+          # Apna Custom Kernel Name yahan set karein
+          export EXTRAVERSION="-TechnicalMundeer"
           
-          make m31_defconfig
-          make -j$(nproc)
+          # HID Configs Injection (m31_defconfig file dhoond kar usmein append karein)
+          CONFIG_FILE=$(find arch/arm64/configs/ -name "m31_defconfig" | head -n 1)
+          if [ -f "$CONFIG_FILE" ]; then
+            echo "CONFIG_USB_HID=y" >> $CONFIG_FILE
+            echo "CONFIG_USB_G_HID=y" >> $CONFIG_FILE
+            make $(basename $CONFIG_FILE)
+          else
+            echo "Error: m31_defconfig nahi mila!"
+            exit 1
+          fi
           
+          # Build process
+          make -j$(nproc) CC=aarch64-linux-gnu-gcc
