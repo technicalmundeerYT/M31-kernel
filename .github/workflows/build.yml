@@ -18,8 +18,7 @@ jobs:
 
       - name: Download Toolchain
         run: |
-          # Yahan wo link dalein jo aapne khud upload ki hai
-          curl -L -o toolchain.tar.gz "PASTE_YOUR_RELEASE_LINK_HERE"
+          curl -L -o toolchain.tar.gz "https://github.com/Khangaroo/clang/releases/download/v15.0.6/clang-r450784d.tar.gz"
           tar -xzf toolchain.tar.gz -C toolchain --strip-components=1
 
       - name: Build TechnicalMundeer Kernel
