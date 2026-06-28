@@ -1,0 +1,18 @@
+name: Build Kernel
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        run: |
+          # Samsung M31 Exynos 9611 Kernel Source
+          git clone --depth=1 https://github.com/aahmad01/android_kernel_samsung_exynos9611.git -b 10.0 .
+      
+      - name: Build Kernel
+        run: |
+          export ARCH=arm64
+          export CROSS_COMPILE=aarch64-linux-gnu-
+          make m31_defconfig
+          make -j$(nproc)
+          
