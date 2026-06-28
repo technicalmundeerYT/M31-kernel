@@ -7,8 +7,8 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v3
         with:
-          repository: 'feds64/android_kernel_samsung_exynos9611'
-          ref: 'lineage-19.1'
+          repository: 'TheAttacker/android_kernel_samsung_exynos9611'
+          ref: 'lineage-18.1'
           path: .
       
       - name: Build Kernel
@@ -16,7 +16,7 @@ jobs:
           sudo apt update
           sudo apt install -y bc bison build-essential flex gcc-aarch64-linux-gnu libc6-dev libncurses5-dev libssl-dev
           
-          # NetHunter Configs
+          # NetHunter HID Configs
           echo "CONFIG_USB_HID=y" >> arch/arm64/configs/m31_defconfig
           echo "CONFIG_USB_G_HID=y" >> arch/arm64/configs/m31_defconfig
           
