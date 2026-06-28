@@ -1,4 +1,4 @@
-name: Build Grass Kernel
+name: Build TechnicalMundeer Kernel
 on: [push]
 
 jobs:
@@ -8,15 +8,21 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v3
         with:
-          submodules: recursive # Submodules zaroori hain
+          submodules: recursive
 
       - name: Setup Build Environment
         run: |
           sudo apt update
           sudo apt install -y bc bison build-essential flex libc6-dev libncurses5-dev libssl-dev
-          # Note: Agar toolchain repo mein nahi hai, toh use download karne ki script yahan aayegi
+          mkdir -p toolchain
 
-      - name: Run Build Script
+      - name: Download and Extract Toolchain
         run: |
-          # HID aur KSU ke saath build chalane ke liye
+          wget -q [LINK_YAHA_DAALEIN] -O toolchain.tar.gz
+          tar -xzf toolchain.tar.gz -C toolchain --strip-components=1
+
+      - name: Build TechnicalMundeer Kernel
+        run: |
+          # Custom branding
+          export EXTRAVERSION="-TechnicalMundeer"
           python3 build_kernel.py --target m31 --oneui
