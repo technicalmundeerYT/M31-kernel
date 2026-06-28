@@ -6,23 +6,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source Code
-        run: |
-          # Bina branch specify kiye clone kar rahe hain taaki error na aaye
-          git clone --depth=1 https://github.com/Exynos9611Development/android_kernel_samsung_universal9611.git .
+        run: git clone --depth=1 https://github.com/Exynos9611Development/android_kernel_samsung_universal9611.git .
       
       - name: Setup Compiler and Build
         run: |
           sudo apt update
           sudo apt install -y bc bison build-essential flex libc6-dev libncurses5-dev libssl-dev gcc-aarch64-linux-gnu
-          
-          # HID Configs
           echo "CONFIG_USB_HID=y" >> arch/arm64/configs/m31_defconfig
           echo "CONFIG_USB_G_HID=y" >> arch/arm64/configs/m31_defconfig
-          
-          # Build Environment
           export ARCH=arm64
           export CROSS_COMPILE=aarch64-linux-gnu-
-          
-          # Build
           make m31_defconfig
-          make -j$(nproc)
+          make -j$(nproc) CC=aarch64-linux-gnu-gcc
