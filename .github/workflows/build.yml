@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Source Code
         run: |
@@ -11,18 +11,14 @@ jobs:
       
       - name: Setup Compiler and Build
         run: |
-          # Dependencies aur Compiler setup
           sudo apt update
           sudo apt install -y bc bison build-essential flex libc6-dev libncurses5-dev libssl-dev gcc-aarch64-linux-gnu
           
-          # NetHunter HID Configs Injection
           echo "CONFIG_USB_HID=y" >> arch/arm64/configs/m31_defconfig
           echo "CONFIG_USB_G_HID=y" >> arch/arm64/configs/m31_defconfig
           
-          # Build Environment
           export ARCH=arm64
           export CROSS_COMPILE=aarch64-linux-gnu-
           
-          # Kernel Build
           make m31_defconfig
           make -j$(nproc)
