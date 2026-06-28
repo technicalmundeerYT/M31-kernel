@@ -4,17 +4,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v3
-        with:
-          repository: 'Exynos9611Development/android_kernel_samsung_universal9611'
-          ref: 'main'
-          path: .
+      - name: Download Source Code
+        run: |
+          # Seedha ZIP download kar rahe hain, git ki jhanjhat khatam
+          wget https://github.com/Exynos9611Development/android_kernel_samsung_universal9611/archive/refs/heads/main.zip
+          unzip main.zip
+          mv android_kernel_samsung_universal9611-main/* .
       
       - name: Build Kernel
         run: |
           sudo apt update
-          sudo apt install -y bc bison build-essential flex gcc-aarch64-linux-gnu libc6-dev libncurses5-dev libssl-dev
+          sudo apt install -y bc bison build-essential flex gcc-aarch64-linux-gnu libc6-dev libncurses5-dev libncurses5 libssl-dev
           
           # NetHunter HID Configs
           echo "CONFIG_USB_HID=y" >> arch/arm64/configs/m31_defconfig
