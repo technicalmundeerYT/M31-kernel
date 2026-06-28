@@ -1,4 +1,4 @@
-name: Build Kernel
+name: Build Grass Kernel
 on: [push]
 
 jobs:
@@ -7,30 +7,16 @@ jobs:
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v3
+        with:
+          submodules: recursive # Submodules zaroori hain
 
       - name: Setup Build Environment
         run: |
           sudo apt update
-          sudo apt install -y bc bison build-essential flex libc6-dev libncurses5-dev libssl-dev gcc-aarch64-linux-gnu
+          sudo apt install -y bc bison build-essential flex libc6-dev libncurses5-dev libssl-dev
+          # Note: Agar toolchain repo mein nahi hai, toh use download karne ki script yahan aayegi
 
-      - name: Build Kernel
+      - name: Run Build Script
         run: |
-          export ARCH=arm64
-          export CROSS_COMPILE=aarch64-linux-gnu-
-          
-          # Apna Custom Kernel Name yahan set karein
-          export EXTRAVERSION="-TechnicalMundeer"
-          
-          # HID Configs Injection (m31_defconfig file dhoond kar usmein append karein)
-          CONFIG_FILE=$(find arch/arm64/configs/ -name "m31_defconfig" | head -n 1)
-          if [ -f "$CONFIG_FILE" ]; then
-            echo "CONFIG_USB_HID=y" >> $CONFIG_FILE
-            echo "CONFIG_USB_G_HID=y" >> $CONFIG_FILE
-            make $(basename $CONFIG_FILE)
-          else
-            echo "Error: m31_defconfig nahi mila!"
-            exit 1
-          fi
-          
-          # Build process
-          make -j$(nproc) CC=aarch64-linux-gnu-gcc
+          # HID aur KSU ke saath build chalane ke liye
+          python3 build_kernel.py --target m31 --oneui
