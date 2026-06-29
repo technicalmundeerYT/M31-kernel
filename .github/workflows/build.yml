@@ -12,10 +12,13 @@ jobs:
 
       - name: Setup KernelSU
         run: |
+          # Pehle check karo hum kahan hain
+          ls -R
+          # Script ko main folder mein run karo
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
 
       - name: Build Kernel
         run: |
-          # Yahan script ko bina --target ke chala kar dekhte hain
-          # ya phir script ke andar ke argument check karke sahi option denge
+          # Yahan apni sahi command do jo script accept karti hai
+          # Agar --target kaam nahi kar raha, toh dekho kya chal raha hai
           python3 build_kernel.py --oneui
