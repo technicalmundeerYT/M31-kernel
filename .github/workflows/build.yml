@@ -13,13 +13,14 @@ jobs:
       - name: Setup Build Environment
         run: |
           sudo apt update
-          sudo apt install -y bash git make libssl-dev curl bc pkg-config m4 libtool automake autoconf python3
+          sudo apt install -y bc bison build-essential flex libc6-dev libncurses5-dev libssl-dev python3
           mkdir -p toolchain
 
-      - name: Download WeebX Clang
+      - name: Download WeebX Clang from Drive
         run: |
-          # WeebX Clang ko download karne ka direct tarika
-          wget -q https://github.com/XSans0/WeebX-Clang/releases/latest/download/WeebX-Clang-linux.tar.gz -O toolchain.tar.gz
+          # Google Drive Direct Link
+          curl -L -f -o toolchain.tar.gz "https://docs.google.com/uc?export=download&id=1TQ8F06Vyk2F655SeU_U38XVYIp8H_d_w"
+          # Extracting to toolchain folder
           tar -xzf toolchain.tar.gz -C toolchain --strip-components=1
 
       - name: Build TechnicalMundeer Kernel
