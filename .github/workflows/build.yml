@@ -18,9 +18,13 @@ jobs:
 
       - name: Download WeebX Clang from Drive
         run: |
-          # Google Drive Direct Link
-          curl -L -f -o toolchain.tar.gz "https://docs.google.com/uc?export=download&id=1TQ8F06Vyk2F655SeU_U38XVYIp8H_d_w"
-          # Extracting to toolchain folder
+          # File ID from your Google Drive link
+          FILE_ID="1TQ8F06Vyk2F655SeU_U38XVYIp8H_d_w"
+          # Download logic to bypass Google Drive confirmation
+          curl -c ./cookie -s -L "https://drive.google.com/uc?export=download&id=${FILE_ID}" > /dev/null
+          CONFIRM=$(awk '/download/ {print $NF}' ./cookie)
+          curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=${CONFIRM}&id=${FILE_ID}" -o toolchain.tar.gz
+          # Extracting
           tar -xzf toolchain.tar.gz -C toolchain --strip-components=1
 
       - name: Build TechnicalMundeer Kernel
