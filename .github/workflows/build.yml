@@ -13,16 +13,18 @@ jobs:
       - name: Setup Build Environment
         run: |
           sudo apt update
-          sudo apt install -y bc bison build-essential flex libc6-dev libncurses5-dev libssl-dev python3
+          sudo apt install -y bash git make libssl-dev curl bc pkg-config m4 libtool automake autoconf python3
           mkdir -p toolchain
 
-      - name: Download Toolchain
+      - name: Download WeebX Clang
         run: |
-          curl -L -o toolchain.tar.gz "https://github.com/Khangaroo/clang/releases/download/v15.0.6/clang-r450784d.tar.gz"
+          # WeebX Clang ko download karne ka direct tarika
+          wget -q https://github.com/XSans0/WeebX-Clang/releases/latest/download/WeebX-Clang-linux.tar.gz -O toolchain.tar.gz
           tar -xzf toolchain.tar.gz -C toolchain --strip-components=1
 
       - name: Build TechnicalMundeer Kernel
         run: |
+          chmod +x build_kernel.py
           export EXTRAVERSION="-TechnicalMundeer"
           export PATH=$GITHUB_WORKSPACE/toolchain/bin:$PATH
           python3 build_kernel.py --target m31 --oneui
