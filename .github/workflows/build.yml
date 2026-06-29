@@ -10,18 +10,12 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Locate Build Script
+      - name: Setup KernelSU
         run: |
-          # Yeh command dikha degi ki file kahan hai
-          find . -name "build_kernel.py"
+          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
 
-      - name: Setup Build Environment
+      - name: Build Kernel
         run: |
-          sudo apt update
-          sudo apt install -y bc bison build-essential flex libc6-dev libncurses5-dev libssl-dev python3 clang llvm lld
-
-      - name: Build TechnicalMundeer Kernel
-        run: |
-          # Yahan file mil jayegi, hum uska sahi path use karenge
-          # Agar script root mein nahi mili, toh 'find' command batayegi ki kahan hai
-          python3 $(find . -name "build_kernel.py") --target m31 --oneui
+          # Yahan script ko bina --target ke chala kar dekhte hain
+          # ya phir script ke andar ke argument check karke sahi option denge
+          python3 build_kernel.py --oneui
