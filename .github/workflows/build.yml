@@ -10,22 +10,18 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Locate Build Script
+        run: |
+          # Yeh command dikha degi ki file kahan hai
+          find . -name "build_kernel.py"
+
       - name: Setup Build Environment
         run: |
           sudo apt update
-          # Dependencies aur Clang compiler install karna
           sudo apt install -y bc bison build-essential flex libc6-dev libncurses5-dev libssl-dev python3 clang llvm lld
 
       - name: Build TechnicalMundeer Kernel
         run: |
-          # Permission set karna
-          chmod +x build_kernel.py
-          
-          # Branding aur Build process
-          export EXTRAVERSION="-TechnicalMundeer"
-          
-          # Compiler ko system ka use karna (No manual download needed)
-          export CC=clang
-          export LD=ld.lld
-          
-          python3 build_kernel.py --target m31 --oneui
+          # Yahan file mil jayegi, hum uska sahi path use karenge
+          # Agar script root mein nahi mili, toh 'find' command batayegi ki kahan hai
+          python3 $(find . -name "build_kernel.py") --target m31 --oneui
