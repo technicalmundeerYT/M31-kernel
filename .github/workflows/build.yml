@@ -13,23 +13,19 @@ jobs:
       - name: Setup Build Environment
         run: |
           sudo apt update
-          sudo apt install -y bc bison build-essential flex libc6-dev libncurses5-dev libssl-dev python3
-          mkdir -p toolchain
-
-      - name: Download WeebX Clang from Drive
-        run: |
-          # File ID from your Google Drive link
-          FILE_ID="1TQ8F06Vyk2F655SeU_U38XVYIp8H_d_w"
-          # Download logic to bypass Google Drive confirmation
-          curl -c ./cookie -s -L "https://drive.google.com/uc?export=download&id=${FILE_ID}" > /dev/null
-          CONFIRM=$(awk '/download/ {print $NF}' ./cookie)
-          curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=${CONFIRM}&id=${FILE_ID}" -o toolchain.tar.gz
-          # Extracting
-          tar -xzf toolchain.tar.gz -C toolchain --strip-components=1
+          # Dependencies aur Clang compiler install karna
+          sudo apt install -y bc bison build-essential flex libc6-dev libncurses5-dev libssl-dev python3 clang llvm lld
 
       - name: Build TechnicalMundeer Kernel
         run: |
+          # Permission set karna
           chmod +x build_kernel.py
+          
+          # Branding aur Build process
           export EXTRAVERSION="-TechnicalMundeer"
-          export PATH=$GITHUB_WORKSPACE/toolchain/bin:$PATH
+          
+          # Compiler ko system ka use karna (No manual download needed)
+          export CC=clang
+          export LD=ld.lld
+          
           python3 build_kernel.py --target m31 --oneui
