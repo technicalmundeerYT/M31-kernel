@@ -1,31 +1,29 @@
-name: Build TechnicalMundeer Kernel
-on: [push]
+name: Build Kernel
+
+on:
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Source Code
+      - name: Checkout source
         uses: actions/checkout@v3
-        with:
-          submodules: recursive
 
-      - name: Debug and Build
+      - name: Set up dependencies
         run: |
-          echo "--- Folder Listing ---"
-          ls -R
-          echo "--- Checking for drivers folder ---"
-          find . -name "drivers"
-          
-          # Folder path ko variable mein le rahe hain
-          KERNEL_DIR=$(find . -name "drivers" -exec dirname {} \;)
-          echo "Kernel directory found at: $KERNEL_DIR"
-          
-          cd $KERNEL_DIR
-          
-          # KernelSU Setup
-          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
-          
-          # Build
-          chmod +x build_kernel.py
-          python3 build_kernel.py --oneui
+          sudo apt update
+          sudo apt install -y build-essential gcc-aarch64-linux-gnu libssl-dev bison flex bc git
+
+      - name: Build Kernel
+        run: |
+          export ARCH=arm64
+          export CROSS_COMPILE=aarch64-linux-gnu-
+          make m31_defconfig
+          make -j$(nproc)
+
+      - name: Upload Kernel Image
+        uses: actions/upload-artifact@v3
+        with:
+          name: Image
+          path: arch/arm64/boot/Image
