@@ -15,19 +15,27 @@ jobs:
           sudo apt update
           sudo apt install -y bash git make libssl-dev curl bc pkg-config m4 libtool automake autoconf clang llvm lld python3
 
-      - name: Clone Kernel Source
+      - name: Clone and Setup Kernel
         run: |
+          # Source code clone karna
           git clone https://github.com/Gojikovi/kernel_samsung_universal9611 kernel_source
+          
+          # Folder verify karna
+          echo "Checking contents of kernel_source folder:"
+          ls -F kernel_source
 
       - name: Build Kernel
         run: |
           cd kernel_source
-          # HID Support ke liye configurations add karna
+          
+          # HID Support manually enable karna
+          echo "Enabling HID support..."
           echo "CONFIG_USB_HID=y" >> arch/arm64/configs/m31_defconfig
           echo "CONFIG_USB_HIDDEV=y" >> arch/arm64/configs/m31_defconfig
           echo "CONFIG_HIDRAW=y" >> arch/arm64/configs/m31_defconfig
           
-          # Kernel Build process
+          # Build process shuru karna
+          echo "Starting build..."
           python3 build_kernel.py --oneui --target=m31 --no-ksu
 
       - name: Upload Kernel Image
