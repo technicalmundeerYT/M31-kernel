@@ -1,4 +1,5 @@
-name: Build Kernel with HID
+name: Build Samsung M31 Kernel
+
 on:
   workflow_dispatch:
 
@@ -6,25 +7,31 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y build-essential gcc-aarch64-linux-gnu libssl-dev bison flex bc git
+          sudo apt install -y bash git make libssl-dev curl bc pkg-config m4 libtool automake autoconf clang llvm lld python3
+
+      - name: Clone Kernel Source
+        run: |
+          git clone https://github.com/Gojikovi/kernel_samsung_universal9611 kernel_source
 
       - name: Build Kernel
         run: |
-          export ARCH=arm64
-          export CROSS_COMPILE=aarch64-linux-gnu-
-          # Enable HID support via script before compiling
-          sed -i 's/# CONFIG_USB_HID is not set/CONFIG_USB_HID=y/' arch/arm64/configs/m31_defconfig
-          make m31_defconfig
-          make -j$(nproc)
+          cd kernel_source
+          # HID Support ke liye configurations add karna
+          echo "CONFIG_USB_HID=y" >> arch/arm64/configs/m31_defconfig
+          echo "CONFIG_USB_HIDDEV=y" >> arch/arm64/configs/m31_defconfig
+          echo "CONFIG_HIDRAW=y" >> arch/arm64/configs/m31_defconfig
+          
+          # Kernel Build process
+          python3 build_kernel.py --oneui --target=m31 --no-ksu
 
-      - name: Upload Artifact
+      - name: Upload Kernel Image
         uses: actions/upload-artifact@v3
         with:
-          name: Kernel-Image
-          path: arch/arm64/boot/Image
+          name: M31-Kernel-Image
+          path: kernel_source/out/arch/arm64/boot/Image
